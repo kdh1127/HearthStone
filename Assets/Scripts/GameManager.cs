@@ -31,6 +31,9 @@ public class GameManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.PageUp))
             TurnManager.Inst.EndTurn();
+
+        if (Input.GetKeyDown(KeyCode.PageDown))
+            CardManager.Inst.TryPutCard(false);
     }
 
     public void StartGame()
