@@ -7,11 +7,27 @@ public class GameManager : MonoBehaviour
     public static GameManager Inst { get; private set; }
     void Awake() => Inst = this;
 
+    [Multiline(10)]
+    [SerializeField] string cheatInfo;
     [SerializeField] NotificationPanel notificationPanel;
+    [SerializeField] ResultPanel resultPanel;
+    [SerializeField] TitlePanel titlePanel;
+    [SerializeField] CameraEffect cameraEffect;
+    [SerializeField] GameObject endTurnBtn;
+
+    WaitForSeconds delay2 = new WaitForSeconds(2);
 
     void Start()
     {
-        StartGame();
+        UISetup();
+    }
+
+    void UISetup()
+    {
+        notificationPanel.ScaleZero();
+        resultPanel.ScaleZero();
+        titlePanel.Active(true);
+        cameraEffect.SetGrayScale(false);
     }
 
     void Update()
@@ -34,6 +50,12 @@ public class GameManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.PageDown))
             CardManager.Inst.TryPutCard(false);
+
+        if (Input.GetKeyDown(KeyCode.Home))
+            EntityManager.Inst.DamageBoss(true,19);
+
+        if (Input.GetKeyDown(KeyCode.End))
+            EntityManager.Inst.DamageBoss(false, 19);
     }
 
     public void StartGame()
@@ -44,5 +66,16 @@ public class GameManager : MonoBehaviour
     public void Notification(string message)
     {
         notificationPanel.Show(message);
+    }
+
+    public IEnumerator GameOver(bool isMyWin)
+    {
+        TurnManager.Inst.isLoading = true;
+        endTurnBtn.SetActive(false);
+        yield return delay2;
+
+        TurnManager.Inst.isLoading = true;
+        resultPanel.Show(isMyWin ? "½Â¸®" : "ÆÐ¹è");
+        cameraEffect.SetGrayScale(true);
     }
 }
